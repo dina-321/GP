@@ -1,0 +1,23 @@
+.update-admin-btn {
+    display: block !important;
+    background-color: var(--mainFontColor) !important;
+    margin-inline: auto !important;
+    margin-top: 1rem;
+}
+
+.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input:focus {
+   color: var(--mainColor) !important;
+}
+
+.css-1jy569b-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
+    color: var(--mainColor) !important;
+}
+
+@media only screen and (max-width: 767px) {
+    .update-admin-btn {
+      
+        margin-top: 1rem !important;
+    }
+    
+  }
+  

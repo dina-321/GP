@@ -1,0 +1,60 @@
+.sideMenu {
+    height: 100%;
+    background-color: var(--mainFontColor);
+    color: var(--mainBgColor);
+    border: none !important;
+}
+
+
+.ps-menu-button:hover {
+    background-color: var(--mainColor) !important;
+}
+
+.sideMenu a.active {
+    background-color: var(--mainColor);
+    color: #fff;
+}
+
+.sideMenu .submenu-link {
+    color: var(--mainFontColor);
+}
+
+.sideMenu .submenu-link:hover {
+    color: #fff;
+}
+
+.sideMenu .submenu-link a.active {
+    background-color: var(--mainColor);
+}
+
+.sideMenu-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem;
+}
+
+.sideMenu-header .toggle {
+    background-color: transparent;
+    border: none;
+    color: var(--mainBgColor);
+    font-size: 1.5rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.sideMenu-header .logo {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.sideMenu-header .logo img {
+    width: 80%;
+}
+
+.open-icon {
+    width: 3.5rem;
+
+}
+

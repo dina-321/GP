@@ -1,0 +1,45 @@
+.user-profile-section {
+    height: 100%;
+}
+
+.user-profile-section .container {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    gap: 2rem;
+    align-items: start;
+    justify-content: center;
+    margin-top: 5rem;
+
+
+}
+
+.user-profile-section .user-tabs {
+    font-size: 1rem;
+    color: var(--mainFontColor);
+    font-weight: 600;
+}
+
+.user-profile-section .user-tabs.Mui-selected {
+    color: var(--mainColor);
+}
+
+.user-profile-section .user-tabs-contaienr .MuiTabs-indicator.css-10d9dml-MuiTabs-indicator {
+    background-color: var(--mainColor);
+}
+
+
+
+/* Medium screens (768px - 991px) */
+@media only screen and (max-width: 991px) {
+
+    .user-profile-section .container {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+        width: 95%;
+    }
+    .user-profile-section .container .left,.user-profile-section .container .right{
+        width: 100%;
+    }
+}
