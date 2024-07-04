@@ -1,12 +1,9 @@
-# app.py
-
-# Apply the patch
-import patch_datasets
-
+import mimetypes
 from flask import Flask, request, jsonify
-from werkzeug.utils import secure_filename
+import logging
 import tempfile
 import os
+from werkzeug.utils import secure_filename
 from datasets import load_dataset, Audio
 from transformers import pipeline
 import librosa
@@ -21,6 +18,9 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # Set TensorFlow to only display error
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import tensorflow as tf
 tf.config.set_soft_device_placement(True)
+
+# Set up logging
+logging.basicConfig(level=logging.DEBUG)
 
 # Cloudinary configuration
 def configure_cloudinary():
@@ -41,7 +41,7 @@ def load_and_resample_audio(file_path, target_sr=48000):
 
 # Function to initialize the zero-shot audio classification pipeline
 def initialize_zero_shot_pipeline(model_name):
-    return pipeline(task="zero-shot-audio-classification", model=model_name)
+    return pipeline(task="zero-shot-audio-classification", model=model_name, device=0)  # device=0 for GPU
 
 # Function to classify an audio sample
 def classify_audio_sample(classifier, audio_sample, candidate_labels):
@@ -95,17 +95,26 @@ zero_shot_classifier = initialize_zero_shot_pipeline(model_name)
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    logging.info("Received upload request")
     if 'file' not in request.files:
+        logging.error("No file part in the request")
         return jsonify({"error": "No file part"}), 400
     file = request.files['file']
     if file.filename == '':
+        logging.error("No selected file")
         return jsonify({"error": "No selected file"}), 400
-    if file:
-        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-            file_path = temp_file.name
-            file.save(file_path)
-        
-        try:
+
+    # Check file format
+    mime_type, _ = mimetypes.guess_type(file.filename)
+    if not mime_type or not mime_type.startswith('audio/'):
+        return jsonify({"error": "Unsupported file format"}), 400
+
+    try:
+        if file:
+            with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                file_path = temp_file.name
+                file.save(file_path)
+            
             # Load and resample the audio file
             audio_sample, sampling_rate = load_and_resample_audio(file_path)
 
@@ -125,8 +134,12 @@ def upload_file():
                 return jsonify({"talking_detected": True, "file_url": file_url}), 200
             else:
                 return jsonify({"talking_detected": False, "message": "No talking detected"}), 200
-        finally:
-            os.remove(file_path)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        os.remove(file_path)
+        logging.info(f"Temporary file deleted: {file_path}")
+
 
 if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0', port=int(os.environ.get("PORT", 10000)))
+    app.run(debug=False)
